@@ -21,7 +21,7 @@ app.config['SECRET_KEY'] = 'your_secret_key'
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'instance', 'database.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-esp32_cam_ip = '192.168.111.181'
+esp32_cam_ip = '192.168.40.210'
 # Liên kết đối tượng db với ứng dụng Flask
 db.init_app(app)
 
@@ -230,7 +230,7 @@ def control_device():
             session['pump']['pump5_status'] = '3'
             print(pump_status)
         
-        # send_data_to_esp32(pump_status)
+        send_data_to_esp32(pump_status)
         session.modified = True
 
         # Trả về phản hồi với giá trị cập nhật
@@ -269,7 +269,7 @@ def send_and_receive_data():
 
 # Model AI dự đoán 
 #Load model
-model = tf.keras.models.load_model('D:/Code VSCode/Python/PBL5/app/PBL05.h5')
+model = tf.keras.models.load_model('D:/Code VSCode/Python/PBL5/app/trained_plant_disease_model_PBL05.keras')
 
 def predict(image_path):
     try:
@@ -304,7 +304,7 @@ def upload_predict():
         take_photo = f'http://{esp32_cam_ip}/capture'
 
         requests.get(take_photo)
-        time.sleep(10)
+        time.sleep(5)
         response2 = requests.get(url)
         if response2.status_code == 200:
             image_filename = f'esp32_cam_image_{uuid.uuid4().hex}.jpg'
