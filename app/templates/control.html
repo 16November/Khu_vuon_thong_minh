@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điều Khiển </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+       .container {
+            background-color: #FFFFFF;
+            /* Nền màu trắng cho phần dưới */
+        }
+
+        .header {
+            background-color: #FFF8E1;
+            /* Nền màu be nhạt cho phần trên */
+            color: #007BFF;
+            /* Màu chữ xanh */
+            border-bottom: 1px solid #000000;
+            /* Đường line đen chia 2 khu vực */
+            padding: 10px;
+            /* Khoảng cách padding để tạo không gian cho chữ */
+        }
+
+        .control-panel {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .control-panel-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .control-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .control-table th,
+        .control-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .control-table th {
+            background-color: #f2f2f2;
+        }
+
+        .btn-sm {
+            margin: 0 0.5rem;
+        }
+
+        .status {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .status::before {
+            content: "Status: ";
+            font-weight: normal;
+            color: #6c757d;
+        }
+
+        #button button {
+            width: 20%;
+            font-size: 20px;
+        }
+
+        .no-hover:hover {
+            background-color: #007bff !important;
+            color: #fff !important;
+        }
+
+        .btn-on {
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+
+        .btn-on-outline {
+            background-color: white;
+            color: #28a745;
+            border-color: #28a745;
+        }
+
+        .btn-off {
+            background-color: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+
+        .btn-off-outline {
+            background-color: white;
+            color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-outline-secondary {
+            background-color: white;
+            color: #6c757d;
+            border-color: #6c757d;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary"
+    style="border: 1px solid grey; margin-bottom: 2%;background-color:#FAF3E0">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#"
+            style="color: 5B4542;font-size: 25px;margin-left: 4%;font-weight: bold;">Khu
+            Vườn Thông Minh</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" style="margin-left: 20%;">
+            <form class="d-flex" role="search" style="margin-left: 77%;">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('logout') }}" class="btn btn-dark" type="button">Đăng xuất</a>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-dark" type="button">Đăng nhập</a>
+                <a href="{{ url_for('register') }}" class="btn btn-dark" type="button">Đăng ký</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</nav>
+    <div class="container--fluid" style="margin: 0px 100px;">
+        <div class="row">
+            <div class="col-md-3 d-flex flex-column align-items-center">
+                <div class="control-panel w-100">
+                    <div class="control-panel-title text-center">Bộ chuyển đổi thông tin</div>
+                    <div class="mb-3 w-100">
+                        <form method="get" action="{{url_for('redirect_form')}}">
+                            <button type="submit" name="action" value="info"
+                                class="btn btn-outline-primary mb-2 w-100">Thông số</button>
+                            <button type="submit" name="action" value="control"
+                                class="btn btn-primary w-100 no-hover">Điều khiển</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="control-panel">
+                    <table class="control-table">
+                        <thead>
+                            <tr>
+                                <th style="font-size: 20px;">Thiết bị</th>
+                                <th style="font-size: 20px;">Điều khiển</th>
+                                <th style="font-size: 20px;">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="font-size: 18px;">Máy bơm 1</td>
+                                <td>
+                                    <div id="button">
+                                        <button type="button" id="pump1_on" onclick="controlDevice('C')"
+                                            class="btn btn-sm btn-on-outline">Bật</button>
+                                        <button type="button" id="pump1_off" onclick="controlDevice('D')"
+                                            class="btn btn-sm btn-off-outline">Tắt</button>
+                                    </div>
+                                </td>
+                                <td id="TT_MB1" class="status" style="font-size: 18px;">{{
+                                    session['pump']['pump1_status'] }}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 18px;">Máy bơm 2</td>
+                                <td>
+                                    <div id="button">
+                                        <button type="button" id="pump2_on" onclick="controlDevice('E')"
+                                            class="btn btn-sm btn-on-outline">Bật</button>
+                                        <button type="button" id="pump2_off" onclick="controlDevice('F')"
+                                            class="btn btn-sm btn-off-outline">Tắt</button>
+                                    </div>
+                                </td>
+                                <td id="TT_MB2" class="status" style="font-size: 18px;">{{
+                                    session['pump']['pump2_status'] }}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 18px;">Máy bơm 3</td>
+                                <td>
+                                    <div id="button">
+                                        <button type="button" id="pump3_on" onclick="controlDevice('G')"
+                                            class="btn btn-sm btn-on-outline">Bật</button>
+                                        <button type="button" id="pump3_off" onclick="controlDevice('H')"
+                                            class="btn btn-sm btn-off-outline">Tắt</button>
+                                    </div>
+                                </td>
+                                <td id="TT_MB3" class="status" style="font-size: 18px;">{{
+                                    session['pump']['pump3_status'] }}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 18px;">Quạt</td>
+                                <td>
+                                    <div id="button">
+                                        <button type="button" id="fan_on" onclick="controlDevice('A')"
+                                            class="btn btn-sm btn-on-outline">Bật</button>
+                                        <button type="button" id="fan_off" onclick="controlDevice('B')"
+                                            class="btn btn-sm btn-off-outline">Tắt</button>
+                                    </div>
+                                </td>
+                                <td id="TT_MQ" class="status" style="font-size: 18px;">{{
+                                    session['pump']['pump4_status'] }}</td>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 18px;">Máy ảnh</td>
+                                <td>
+                                    <div id="button">
+                                        <button type="button" id="camera1" onclick="controlDevice('1')"
+                                            class="btn btn-sm btn-outline-secondary">1</button>
+                                        <button type="button" id="camera2" onclick="controlDevice('2')"
+                                            class="btn btn-sm btn-outline-secondary">2</button>
+                                        <button type="button" id="camera3" onclick="controlDevice('3')"
+                                            class="btn btn-sm btn-outline-secondary">3</button>
+                                    </div>
+                                </td>
+                                <td id="TT_MA" class="status" style="font-size: 18px;">{{
+                                    session['pump']['pump5_status'] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function controlDevice(pumpStatus) {
+            fetch(`/control_device?Pump=${pumpStatus}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.pump1_status) updateStatus('TT_MB1', data.pump1_status, 'pump1_on', 'pump1_off');
+                    if (data.pump2_status) updateStatus('TT_MB2', data.pump2_status, 'pump2_on', 'pump2_off');
+                    if (data.pump3_status) updateStatus('TT_MB3', data.pump3_status, 'pump3_on', 'pump3_off');
+                    if (data.pump4_status) updateStatus('TT_MQ', data.pump4_status, 'fan_on', 'fan_off');
+                    if (data.pump5_status) updateCameraStatus(data.pump5_status);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    
+        function updateStatus(elementId, status, onButtonId, offButtonId) {
+            const statusElement = document.getElementById(elementId);
+            if (statusElement) {
+                statusElement.textContent = status;
+            }
+    
+            const onButton = document.getElementById(onButtonId);
+            const offButton = document.getElementById(offButtonId);
+    
+            if (status === 'Bật') {
+                if (onButton) {
+                    onButton.classList.remove('btn-on-outline');
+                    onButton.classList.add('btn-on');
+                }
+                if (offButton) {
+                    offButton.classList.remove('btn-off');
+                    offButton.classList.add('btn-off-outline');
+                }
+            } else if (status === 'Tắt') {
+                if (onButton) {
+                    onButton.classList.remove('btn-on');
+                    onButton.classList.add('btn-on-outline');
+                }
+                if (offButton) {
+                    offButton.classList.remove('btn-off-outline');
+                    offButton.classList.add('btn-off');
+                }
+            }
+        }
+    
+        function updateCameraStatus(status) {
+            const cameraButtons = ['camera1', 'camera2', 'camera3'];
+    
+            cameraButtons.forEach(buttonId => {
+                const button = document.getElementById(buttonId);
+                if (button) {
+                    button.classList.remove('btn-secondary');
+                    button.classList.add('btn-outline-secondary');
+                }
+            });
+    
+            if (status === '1') {
+                const button = document.getElementById('camera1');
+                if (button) {
+                    button.classList.add('btn-secondary');
+                    button.classList.remove('btn-outline-secondary');
+                }
+            } else if (status === '2') {
+                const button = document.getElementById('camera2');
+                if (button) {
+                    button.classList.add('btn-secondary');
+                    button.classList.remove('btn-outline-secondary');
+                }
+            } else if (status === '3') {
+                const button = document.getElementById('camera3');
+                if (button) {
+                    button.classList.add('btn-secondary');
+                    button.classList.remove('btn-outline-secondary');
+                }
+            }
+    
+            const statusElement = document.getElementById('TT_MA');
+            if (statusElement) {
+                statusElement.textContent = `${status}`;
+            }
+        }
+    
+        // Cập nhật trạng thái nút từ session khi tải trang
+        document.addEventListener('DOMContentLoaded', function () {
+            const pump1Status = '{{ session["pump"]["pump1_status"] }}';
+            const pump2Status = '{{ session["pump"]["pump2_status"] }}';
+            const pump3Status = '{{ session["pump"]["pump3_status"] }}';
+            const pump4Status = '{{ session["pump"]["pump4_status"] }}';
+            const pump5Status = '{{ session["pump"]["pump5_status"] }}';
+    
+            updateStatus('TT_MB1', pump1Status, 'pump1_on', 'pump1_off');
+            updateStatus('TT_MB2', pump2Status, 'pump2_on', 'pump2_off');
+            updateStatus('TT_MB3', pump3Status, 'pump3_on', 'pump3_off');
+            updateStatus('TT_MQ', pump4Status, 'fan_on', 'fan_off');
+            updateCameraStatus(pump5Status);
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

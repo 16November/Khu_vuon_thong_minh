@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/5.0.0/mdb.min.css" rel="stylesheet">
+    <title>Register Form</title>
+    <style>
+        .gradient-custom {
+            background: linear-gradient(135deg, #1e7237, #2a9880);
+        }
+
+        .h-custom {
+            height: calc(100% - 100px);
+        }
+
+        .register-image {
+            object-fit: cover;
+            object-position: center;
+            height: 100%;
+            width: 100%;
+            border-top-right-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="vh-100 gradient-custom">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-lg-10 col-xl-9">
+                    <div class="card" style="border-radius: 1rem;">
+                        <div class="row g-0">
+                            <div class="col-md-6 d-flex align-items-center">
+                                <div class="card-body p-5 text-center">
+                                    {% with messages = get_flashed_messages() %}
+                                    {% if messages %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ messages[0] }}
+                                    </div>
+                                    {% endif %}
+                                    {% endwith %}
+                                    <form method="post" action="{{ url_for('register_user') }}">
+                                        <!-- Adjust the 'action' URL as needed -->
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                        <div class="mb-md-5 mt-md-4 pb-5">
+                                            <h2 class="fw-bold mb-2 text-uppercase">Register</h2>
+                                            <p class="text-dark-50 mb-5">Please enter your details to register!</p>
+                                            <div class="form-outline form-dark mb-4">
+                                                <input type="text" id="typeName" name="username"
+                                                    class="form-control form-control-lg" />
+                                                <label class="form-label" for="typeName">Username</label>
+                                            </div>
+                                            <div class="form-outline form-dark mb-4">
+                                                <input type="email" id="typeEmailX" name="email"
+                                                    class="form-control form-control-lg" />
+                                                <label class="form-label" for="typeEmailX">Email</label>
+                                            </div>
+                                            <div class="form-outline form-dark mb-4">
+                                                <input type="text" id="typeName" name="name"
+                                                    class="form-control form-control-lg" />
+                                                <label class="form-label" for="typeName">Name</label>
+                                            </div>
+                                            <div class="form-outline form-dark mb-4">
+                                                <input type="password" id="typePasswordX" name="password"
+                                                    class="form-control form-control-lg" />
+                                                <label class="form-label" for="typePasswordX">Password</label>
+                                            </div>
+                                            <button class="btn btn-info btn-lg px-5" type="submit">Register</button>
+                                        </div>
+                                    </form>
+                                    <div>
+                                        <p class="mb-0">Already have an account? <a href="{{ url_for('home') }}"
+                                                class="text-dark-50 fw-bold">Log In</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 d-none d-md-block">
+                                <img src="./static/background/loginbackground.png" alt="Register image"
+                                    class="img-fluid register-image" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/5.0.0/mdb.min.js"></script>
+</body>
+
+</html>

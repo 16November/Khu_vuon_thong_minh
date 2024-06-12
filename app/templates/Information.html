@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông Số </title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <style>
+        .container {
+            background-color: #FFFFFF;
+            /* Nền màu trắng cho phần dưới */
+        }
+
+        .header {
+            background-color: #FFF8E1;
+            /* Nền màu be nhạt cho phần trên */
+            color: #007BFF;
+            /* Màu chữ xanh */
+            border-bottom: 1px solid #000000;
+            /* Đường line đen chia 2 khu vực */
+            padding: 10px;
+            /* Khoảng cách padding để tạo không gian cho chữ */
+        }
+
+
+        .btn-outline-blue {
+            color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-outline-blue:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .control-panel {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-panel-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .no-hover:hover {
+            background-color: #007bff !important;
+            color: #fff !important;
+        }
+
+        #navbarSupportedContent ul li a {
+            color: white;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary"
+    style="border: 1px solid grey; margin-bottom: 2%;background-color:#FAF3E0">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#"
+            style="color:5B4542; font-size: 25px; margin-left: 4%; font-weight: bold;">Khu Vườn Thông Minh</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+            aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent" style="margin-left: 20%;">
+            <form class="d-flex" role="search" style="margin-left: 77%;">
+                {% if current_user.is_authenticated %}
+                <a href="{{ url_for('logout') }}" class="btn btn-dark" type="button">Đăng xuất</a>
+                {% else %}
+                <a href="{{ url_for('login') }}" class="btn btn-dark" type="button">Đăng nhập</a>
+                <a href="{{ url_for('register') }}" class="btn btn-dark" type="button">Đăng ký</a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</nav>
+
+
+    <div class="container--fluid" style="margin: 0px 100px;">
+        <div class="row">
+            <div class="col-md-3 d-flex flex-column align-items-center">
+                <div class="control-panel w-100">
+                    <div class="control-panel-title text-center">Bộ chuyển đổi thông tin</div>
+                    <div class="mb-3 w-100">
+                        <form method="get" action="{{ url_for('redirect_form') }}">
+                            <button type="submit" name="action" value="info"
+                                class="btn btn-primary mb-2 w-100 no-hover">Thông số</button>
+                            <button type="submit" name="action" value="control"
+                                class="btn btn-outline-primary w-100">Điều khiển</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="mb-2">
+                    <div class="control-panel w-100" style="text-align: center;">
+                        <div class="control-panel-title text-center">Dự đoán hình ảnh</div>
+                        <div class="hienThiAnh">
+                            <img id="displayedImage" src=""
+                                style="max-width: 100%; height: auto; display: none; margin: auto;"><br>
+                        </div>
+                        <button id="uploadButton" class="btn btn-outline-success">Cập nhật hình ảnh</button>
+                        <button id="predictButton" class="btn btn-outline-warning" style="display: none;">Dự đoán hình
+                            ảnh</button>
+                        <div id="predictionResult" class="mt-3" style="display: none;">
+                            <h5>Kết quả dự đoán:</h5>
+                            <p id="predictionText"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="control-panel w-100">
+                    <div class="control-panel-title text-center">Tình trạng môi trường</div>
+                    <form class="HienThiTT" id="formHienThi" method="get" action="{{ url_for('update_info') }}">
+                        <table style="font-size: 18px; margin-bottom: 2%;">
+                            <tr>
+                                <td><b>Nhiệt độ :</b></td>
+                                <td id="temperature">{% if info.temperature is not none %}{{ info.temperature }}{% endif
+                                    %}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Độ ẩm :</b></td>
+                                <td id="humidity">{% if info.humidity is not none %}{{ info.humidity }}{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Độ ẩm đất 1:</b></td>
+                                <td id="soilhumidity1">{% if info.soilhumidity1 is not none %}{{ info.soilhumidity1 }}{%
+                                    endif %}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Độ ẩm đất 2:</b></td>
+                                <td id="soilhumidity2">{% if info.soilhumidity2 is not none %}{{ info.soilhumidity2 }}{%
+                                    endif %}</td>
+                            </tr>
+                            <tr>
+                                <td><b>Độ ẩm đất 3:</b></td>
+                                <td id="soilhumidity3">{% if info.soilhumidity3 is not none %}{{ info.soilhumidity3 }}{%
+                                    endif %}</td>
+                            </tr>
+                        </table>
+                        <button type="button" id="updateButton" class="btn btn-outline-primary w-100">Cập nhật thông
+                            tin</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('uploadButton').addEventListener('click', function () {
+            fetch('/upload_predict?action=upload', {
+                method: 'GET'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.image_url) {
+                        const img = document.getElementById('displayedImage');
+                        img.src = data.image_url;
+                        img.style.display = 'block';
+                        document.getElementById('predictButton').style.display = 'inline-block';
+                    } else {
+                        console.error('Error uploading image:', data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+
+        document.getElementById('predictButton').addEventListener('click', function () {
+            const img = document.getElementById('displayedImage');
+            if (img.src) {
+                fetch(`/upload_predict?action=predict&image_url=${encodeURIComponent(img.src)}`, {
+                    method: 'GET'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.prediction) {
+                            document.getElementById('predictionText').innerText = data.prediction;
+                            document.getElementById('predictionResult').style.display = 'block';
+                        } else {
+                            console.error('Error predicting image:', data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+            } else {
+                alert('Please upload an image first.');
+            }
+        });
+
+        function fetchData() {
+            fetch('/update_info')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById('temperature').innerText = data.temperature || '';
+                    document.getElementById('humidity').innerText = data.humidity || '';
+                    document.getElementById('soilhumidity1').innerText = data.soilhumidity1 || '';
+                    document.getElementById('soilhumidity2').innerText = data.soilhumidity2 || '';
+                    document.getElementById('soilhumidity3').innerText = data.soilhumidity3 || '';
+                })
+                .catch(error => console.error('Error fetching data:', error.message));
+        }
+
+        document.getElementById('updateButton').addEventListener('click', function () {
+            fetchData();
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            fetchData();
+        });
+
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

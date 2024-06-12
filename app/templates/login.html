@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/5.0.0/mdb.min.css" rel="stylesheet">
+    <title>Login Form</title>
+    <style>
+        .gradient-custom {
+            background: linear-gradient(135deg, #1e7229, #2a9877);
+        }
+
+        .h-custom {
+            height: calc(100% - 100px);
+        }
+
+        .login-image {
+            object-fit: cover;
+            object-position: center;
+            height: 100%;
+            width: 100%;
+            border-top-right-radius: 1rem;
+            border-bottom-right-radius: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <section class="vh-100 gradient-custom">
+        <div class="container py-5 h-100">
+            <div class="row d-flex justify-content-center align-items-center h-100">
+                <div class="col-lg-10 col-xl-9">
+                    <div class="card" style="border-radius: 1rem;">
+                        <div class="row g-0">
+                            <div class="col-md-6 d-flex align-items-center">
+                                <div class="card-body p-5 text-center">
+                                    {% with messages = get_flashed_messages() %}
+                                    {% if messages %}
+                                    <div class="alert alert-danger" role="alert">
+                                        {{ messages[0] }}
+                                    </div>
+                                    {% endif %}
+                                    {% endwith %}
+                                    {% if current_user.is_authenticated %}
+                                    <div class="alert alert-success" role="alert">
+                                        You are logged in as {{ current_user.username }}!
+                                        <a href="{{ url_for('logout') }}" class="btn btn-danger btn-sm ml-2">Logout</a>
+                                    </div>
+                                    {% endif %}
+                                    <form method="post" action="{{ url_for('login') }}">
+                                        <!-- Adjust the 'action' URL as needed -->
+                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                        <div class="mb-md-5 mt-md-4 pb-5">
+                                            <h2 class="fw-bold mb-2 text-uppercase">Login</h2>
+                                            <p class="text-dark-50 mb-5">Please enter your login and password!</p>
+                                            <div class="form-outline form-dark mb-4">
+                                                <input type="username" id="typeUsernameX" name="username"
+                                                    class="form-control form-control-lg" />
+                                                <label class="form-label" for="typeUsernameX">Username</label>
+                                            </div>
+                                            <div class="form-outline form-dark mb-4">
+                                                <input type="password" id="typePasswordX" name="password"
+                                                    class="form-control form-control-lg" />
+                                                <label class="form-label" for="typePasswordX">Password</label>
+                                            </div>
+                                            <button class="btn btn-info btn-lg px-5" type="submit">Login</button>
+                                        </div>
+                                    </form>
+                                    <div>
+                                        <p class="mb-0">Don't have an account? <a href="{{ url_for('register_view')}}"
+                                                class="text-dark-50 fw-bold">Sign Up</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 d-none d-md-block">
+                                <img src="./static/background/loginbackground.png" alt="Login image"
+                                    class="img-fluid login-image" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/5.0.0/mdb.min.js"></script>
+</body>
+
+</html>
