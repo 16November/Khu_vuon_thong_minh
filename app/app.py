@@ -269,7 +269,7 @@ def send_and_receive_data():
 
 # Model AI dự đoán 
 #Load model
-model = tf.keras.models.load_model('D:/Code VSCode/Python/PBL5/PBL5/PBL5/app/trained_plant_disease_model_PBL05.h5')
+model = tf.keras.models.load_model('D:/Code VSCode/Python/PBL5/app/trained_plant_disease_model_PBL05.h5')
 
 def predict(image_path):
     try:
