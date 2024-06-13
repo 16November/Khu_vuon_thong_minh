@@ -118,6 +118,7 @@ def information():
 @app.route('/control_view')
 def control_view():
     status_start()
+    print("chuyen form control sucess")
     return render_template('control.html',session=session)
 
 
@@ -130,7 +131,7 @@ def redirect_form():
             print("chuyen form info sucess")
             return redirect(url_for('information'))
         elif action == 'control':
-            print("chuyen form control sucess")
+            
             return redirect(url_for('control_view'))
 
 # Create Status
@@ -150,13 +151,20 @@ def status_start():
         if data[0] == '0':
             pump1_status = "Tắt";
         elif data[0] == '1':
-            pump1_status = "Bật";  
-        
+            pump1_status = "Bật";   
+        if data[10] == '0':
+            pump1_status = "Thủ công";
+        elif data[10] == '1':
+            pump1_status = "Tự động";
         if data[1] == '0':
             pump2_status = "Tắt";
         elif data[1] == '1':
             pump2_status = "Bật";
         
+        if data[11] == '0':
+            pump2_status = "Thủ công";
+        elif data[11] == '1':
+            pump2_status = "Tự động";
         if data[2] == '0':
             pump3_status = "Tắt";
         elif data[2] == '1':
@@ -166,6 +174,10 @@ def status_start():
             pump4_status = "Tắt";
         elif data[3] == '1':
             pump4_status = "Bật";   
+        if data[12] == '0':
+            pump3_status = "Thủ công";
+        elif data[12] == '1':
+            pump3_status = "Tự động";
         
         if data[9] == '1':
             pump5_status = "1";
@@ -195,7 +207,8 @@ def update_status(key, value):
 @app.route('/control_device', methods=['GET'], endpoint='control_device')
 def control_device():
     pump_status = request.args.get('Pump')
-    if pump_status in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', '1', '2', '3']:
+    
+    if pump_status in ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', '1', '2', '3', '5', '6', '7', '8', '9', '10']:
         if pump_status == 'A':
             session['pump']['pump4_status'] = 'Bật'
             print(pump_status)
@@ -229,8 +242,26 @@ def control_device():
         elif pump_status == '3':
             session['pump']['pump5_status'] = '3'
             print(pump_status)
+        elif pump_status == '5':
+            session['pump']['pump1_status'] = 'Tự động'
+            print(pump_status)
+        elif pump_status == '6':
+            session['pump']['pump1_status'] = 'Thủ công'
+            print(pump_status)
+        elif pump_status == '7':
+            session['pump']['pump2_status'] = 'Tự động'
+            print(pump_status)
+        elif pump_status == '8':
+            session['pump']['pump2_status'] = 'Thủ công'
+            print(pump_status)
+        elif pump_status == '9':
+            session['pump']['pump3_status'] = 'Tự động'
+            print(pump_status)
+        elif pump_status == '10':
+            session['pump']['pump3_status'] = 'Thủ công'
+            print(pump_status)
         
-        send_data_to_esp32(pump_status)
+        # send_data_to_esp32(pump_status)
         session.modified = True
 
         # Trả về phản hồi với giá trị cập nhật
@@ -238,6 +269,7 @@ def control_device():
 
     # Trả về phản hồi mặc định
     return jsonify({"status": "Ok"}), 200
+
 
 #Gửi data to ESP32 cam 
 def send_data_to_esp32(text):
